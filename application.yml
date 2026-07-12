@@ -1,0 +1,25 @@
+app:
+  name: Service commandes
+
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: kafka.internal:9092
+      topic: orders.created
+      consumed-by-application: Paiements
+  rabbitmq:
+    template:
+      exchange: billing.events
+      routing-key: invoice.request
+      consumed-by-application: Paiements
+
+clients:
+  base-clients:
+    url: https://base-clients.internal
+    application: Base clients
+  paiements:
+    url: https://paiements.internal/charge
+    application: Paiements
+
+callers:
+  - API Gateway
