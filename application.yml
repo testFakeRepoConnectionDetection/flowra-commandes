@@ -1,5 +1,7 @@
 app:
   name: Service commandes
+  flow-enrichment:
+    data-category-field: data_category
 
 spring:
   kafka:
@@ -7,19 +9,33 @@ spring:
       bootstrap-servers: kafka.internal:9092
       topic: orders.created
       consumed-by-application: Paiements
+      message:
+        data-category: ORDER_CREATED_EVENT
+        payload-type: fixture.dto.OrderCreatedEvent
+        payload-format: AVRO
   rabbitmq:
     template:
       exchange: billing.events
       routing-key: invoice.request
       consumed-by-application: Paiements
+      message:
+        data-category: BILLING_INVOICE_REQUEST
+        payload-type: fixture.dto.BillingInvoiceRequest
+        payload-format: JSON
 
 clients:
   base-clients:
     url: https://base-clients.internal
     application: Base clients
+    data-category: CUSTOMER_REFERENTIAL
   paiements:
     url: https://paiements.internal/charge
     application: Paiements
+    data-category: CHARGE_INSTRUCTION
+
+api:
+  orders:
+    data-category: ORDER_PAYLOAD
 
 callers:
   - API Gateway
